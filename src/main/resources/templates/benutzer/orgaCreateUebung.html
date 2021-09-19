@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Übung erstellen</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+          rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
+          crossorigin="anonymous">
+    <style>
+        .center {
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<a>Account: <span th:text="${user} ?: 'Not logged in'">Not logged in</span></a>
+<form th:if="${user}" action="/logout" method="post">
+    <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
+    <button class="btn-sm btn-danger" type="submit">Logout</button>
+</form>
+<div class="center">
+    <h1>Übung erstellen</h1>
+    <br>
+    <form action="#" th:action="@{/organisator/add}" th:object="${uebung}" method="post">
+        <div class="row">
+            <div class="form-group">
+                <label th:for="gruppenGroesse">Gruppengröße</label>
+                <input type="number" class="form-control" th:id="gruppenGroesse" aria-describedby="Die Gruppengröße" th:field="*{gruppenGroesse}">
+            </div>
+            <div class="form-group">
+                <label for="anmeldetyp">Anmeldetyp</label>
+                <select class="form-control" id="anmeldetyp" th:name="anmeldeTyp">
+                    <option th:each="anmeldeOpt : ${T(propraganda.praktikum.logic.aggregate.uebung.AnmeldeTyp).values()}"
+                            th:value="${anmeldeOpt}" th:text="${anmeldeOpt}" th:field="*{anmeldeTyp}"></option>
+                </select>
+            </div>
+        </div>
+        <br>
+        <div class="row" id="anmeldezeitraum">
+            <div class="col-xs-12 col-sm-6">
+                <label th:for="anmeldezeitraumStart">Anmeldezeitraum Start</label>
+                <div class="input-group date">
+                    <input type="datetime-local" th:type="datetime-local" class="form-control"
+                           th:id="anmeldezeitraum.start" th:name="anmeldezeitraum.start"
+                           th:value="${uebung.getAnmeldezeitraum().getZeitraumStart()}" />
+                </div>
+            </div>
+                <div class="col-xs-12 col-sm-6">
+                    <label tH:for="anmeldezeitraumEnde">Anmeldezeitraum Ende</label>
+                    <div class="input-group date">
+                        <input type="datetime-local" th:type="datetime-local" class="form-control"
+                               th:id="anmeldezeitraum.ende" th:name="anmeldezeitraum.ende"
+                               th:value="${uebung.getAnmeldezeitraum().getZeitraumEnde()}" />
+                    </div>
+                </div>
+        </div>
+        <div class="row" id="uebungszeitraum">
+            <div class="col-xs-12 col-sm-6">
+                <label th:for="uebungszeitraum.start">Übungszeitraum Start</label>
+                <div class="input-group date">
+                    <input type="datetime-local" th:type="datetime-local" class="form-control"
+                           th:id="uebungszeitraum.start" th:name="uebungszeitraum.start"
+                           th:value="${uebung.getUebungszeitraum().getZeitraumStart()}" />
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <label th:for="uebungszeitraum.ende">Übungszeitraum Ende</label>
+                <div class="input-group date">
+                    <input type="datetime-local" th:type="datetime-local" class="form-control"
+                           th:id="uebungszeitraum.ende" th:name="uebungszeitraum.ende"
+                           th:value="${uebung.getUebungszeitraum().getZeitraumEnde()}" />
+                </div>
+            </div>
+        </div>
+        <br>
+        <button type="submit" class="btn btn-primary">Weiter</button>
+    </form>
+</div>
+</body>
+</html>

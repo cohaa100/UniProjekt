@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Startseite</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+		  integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
+          crossorigin="anonymous">
+    <style>
+		.center {
+		  margin: 0;
+		  position: absolute;
+		  top: 50%;
+		  left: 50%;
+		  -ms-transform: translate(-50%, -50%);
+		  transform: translate(-50%, -50%);
+		  text-align: center;
+		}
+    </style>
+</head>
+<body>
+<a>Account: <span th:text="${user} ?: 'Not logged in'">Not logged in</span></a>
+<form th:if="${user}" action="/logout" method="post">
+	<input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
+	<button class="btn-sm btn-danger" type="submit">Logout</button>
+</form>
+<div class="container">
+	<div class="center">
+		<h1>Propraganda-Übungssystem</h1>
+		<br>
+		<a th:if="!${user}" href="/oauth2/authorization/github" class="btn btn-primary" role="button">Login with GitHub</a>
+		<form th:if="${user}">
+			<h3>Erfolgreich eingeloggt!</h3>
+			<br>
+			<a href="/uebungen" class="btn btn-primary" role="button">Übungsansicht</a>
+		</form>
+	</div>
+</div>
+</body>
+</html>

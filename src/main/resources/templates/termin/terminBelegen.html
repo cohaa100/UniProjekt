@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>Termin belegen</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+          rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
+          crossorigin="anonymous">
+    <style>
+        .center {
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<a>Account: <span th:text="${user} ?: 'Not logged in'">Not logged in</span></a>
+<form th:if="${user}" action="/logout" method="post">
+    <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
+    <button class="btn-sm btn-danger" type="submit">Logout</button>
+</form>
+<div class="center">
+    <h1>Termin Anmeldung</h1>
+    <br>
+    <form action="#" th:action="@{/termin/{terminId}/belegen (terminId=${termin.getTerminId()})}" th:object="${termin}" method="post">
+        <div class="form-group">
+            <label th:for="gruppenName">Gruppenname</label>
+            <input type="text" class="form-control" th:id="gruppenName" aria-describedby="Der Gruppenname" th:field="*{gruppenName}">
+        </div>
+        <br>
+        <div class="form-group">
+            <label th:for="gitnamen">GitHub Benutzernamen der Mitglieder</label>
+            <input type="text" class="form-control" th:id="gitnamen" aria-describedby="Die GitHub Benutzernamen der Mitglieder" th:value="${String}" th:name="gitnamen">
+        </div>
+        <br>
+        <button type="submit" class="btn btn-primary">Weiter</button>
+    </form>
+</div>
+</body>
+</html>
+
+<!--<table class="text-center" border="1">
+        <tr>
+            <td><label/>Gruppenname</td>
+            <td><input type="text" th:field="*{gruppenName}" /></td>
+        </tr>
+        <tr>
+            <td><label/>Gruppen Mitglieder</td>
+            <td><input type="text" th:value="${String}" th:name="gitnamen" /></td>
+        </tr>
+        <tr>
+            <td><input type="submit" value="Submit" /></td>
+        </tr>
+    </table>-->

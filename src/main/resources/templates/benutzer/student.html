@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <title th:text="'Übung '+${uebungId}">Übung</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
+        crossorigin="anonymous">
+  <style>
+    ul, li
+    {
+      list-style: none;
+    }
+    .center {
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<a>Account: <span th:text="${user} ?: 'Not logged in'">Not logged in</span></a>
+<form th:if="${user}" action="/logout" method="post">
+  <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
+  <button class="btn-sm btn-danger" type="submit">Logout</button>
+</form>
+<div class="center">
+  <h1 th:text="'Übung '+${uebungId}"></h1>
+  <br>
+  <a th:text="'Anmeldezeitraum: '+${#temporals.format(uebung.getAnmeldezeitraum().getZeitraumStart(),'dd-MM-yyyy HH:mm')+' - '+#temporals.format(uebung.getAnmeldezeitraum().getZeitraumEnde(),'dd-MM-yyyy HH:mm')}"></a>
+  <br>
+  <a th:text="'Übungszeitraum: '+${#temporals.format(uebung.getUebungszeitraum().getZeitraumStart(),'dd-MM-yyyy HH:mm')+' - '+#temporals.format(uebung.getUebungszeitraum().getZeitraumEnde(),'dd-MM-yyyy HH:mm')}"></a>
+  <br><br>
+  <div class="container border border-primary">
+    <ul th:each="termin : ${terminList}">
+      <li> <a th:href="@{/termin/{id} (id=${termin.getTerminId()})}" th:text="${'Termin ' + termin.getTerminId() + ' - ' + termin.getDatum() + ' - belegt: ' + termin.isBelegt()}">Termin</a></li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8"/>
+    <title th:text="'Termin '+${terminId}">Termin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
+          rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl"
+          crossorigin="anonymous">
+    <style>
+        ul, li
+        {
+            list-style: none;
+        }
+        .center {
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<a>Account: <span th:text="${user} ?: 'Not logged in'">Not logged in</span></a>
+<form th:if="${user}" action="/logout" method="post">
+    <input th:name="${_csrf.parameterName}" th:value="${_csrf.token}" type="hidden"/>
+    <button class="btn-sm btn-danger" type="submit">Logout</button>
+</form>
+<div class="center">
+    <h1 th:text="'Termin '+${terminId}"></h1>
+    <br>
+    <a th:if="${gruppenAnmeldung and !termin.isBelegt() and imAnmeldeZeitraum}" sec:authorize="hasRole('ROLE_STUDENT')" th:href="@{/termin/{terminId}/belegen (terminId=${termin.getTerminId()})}" class="btn btn-success">Gruppe erstellen</a>
+    <form th:if="${gruppenAnmeldung and termin.isBelegt() and !termin.getMitglieder().contains(benutzerId) or !termin.getMitglieder().contains(benutzerId) and !gruppenAnmeldung and imAnmeldeZeitraum}"
+          th:action="@{/termin/{terminId}/beitreten (terminId=${termin.getTerminId()})}" method="post" sec:authorize="hasRole('ROLE_STUDENT')">
+        <input type="submit" class="btn btn-success" value="Gruppe Beitreten" />
+    </form>
+    <form th:if="${termin.getMitglieder().contains(benutzerId) and imAnmeldeZeitraum}" sec:authorize="hasRole('ROLE_STUDENT')" th:action="@{/termin/{terminId}/verlassen (terminId=${termin.getTerminId()})}" method="post">
+        <input type="submit" class="btn btn-danger" value="Gruppe verlassen"/>
+    </form>
+    <form sec:authorize="hasRole('ROLE_ORGANISATOR')" th:action="@{/organisator/{terminId}/entfernen (terminId=${termin.getTerminId()})}" method="post">
+        <a sec:authorize="hasRole('ROLE_ORGANISATOR')" th:href="@{/organisator/{terminId}/gruppenedit (terminId=${termin.getTerminId()})}" class="btn btn-success">Gruppe bearbeiten</a>
+        <a sec:authorize="hasRole('ROLE_ORGANISATOR')" th:href="@{/organisator/{terminId}/tutorzuweisen (terminId=${termin.getTerminId()})}" class="btn btn-success">Tutor zuweisen</a>
+        <input type="submit" class="btn btn-danger" value="Termin löschen"/>
+    </form>
+    <br><br>
+    <div class="container border border-primary">
+        <p th:text="'Übung am: '+${#temporals.format(termin.getDatum(),'dd-MM-yyyy HH:mm')}">Übung am:</p>
+        <p th:text="'Belegt: '+${termin.isBelegt()}">Belegt:</p>
+        <p th:if="${termin.isBelegt()}" th:text="${'Gruppe: ' + termin.getGruppenName()}">Gruppe:</p>
+        <p th:if="${termin.isBelegt()}">Mitglieder:<ul th:each="benutzer : ${benutzerListe}"><li th:text="${benutzer.getGitHubName()}"></li></ul></p>
+        <p th:if="${tutor != null}" th:text="'Tutor: '+${tutor.getGitHubName()}">Tutor:</p>
+    </div>
+</div>
+</body>
+</html>
